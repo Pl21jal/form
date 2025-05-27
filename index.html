@@ -9,7 +9,7 @@
 <body>
   <div class="container">
     <h1>Form Kontak</h1>
-    <form autocomplete="on">
+    <form id="kontakForm">
       <label for="nama">Nama:</label>
       <input type="text" id="nama" name="name" autocomplete="name" required>
 
@@ -21,6 +21,39 @@
 
       <button type="submit">Kirim</button>
     </form>
+    <p id="status"></p>
   </div>
+
+  <script>
+    const form = document.getElementById("kontakForm");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      
+      const nama = document.getElementById("nama").value;
+      const nohp = document.getElementById("nohp").value;
+      const email = document.getElementById("email").value;
+
+      const token = "bot7887428382:AAEPSoJn_agWn17MEGEM43hStu-pmr6kC5Q";
+      const chatId = "7096229986";
+      const message = `Form Kontak Baru:%0A%0ANama: ${nama}%0ANo HP: ${nohp}%0AEmail: ${email}`;
+
+      fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${message}`, {
+        method: "GET"
+      })
+      .then(response => {
+        if (response.ok) {
+          status.innerText = "Berhasil dikirim!";
+          form.reset();
+        } else {
+          status.innerText = "Gagal mengirim.";
+        }
+      })
+      .catch(error => {
+        status.innerText = "Terjadi kesalahan.";
+      });
+    });
+  </script>
 </body>
 </html>
