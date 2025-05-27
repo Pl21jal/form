@@ -16,9 +16,6 @@
       <label for="nohp">No HP:</label>
       <input type="tel" id="nohp" name="tel" autocomplete="tel" />
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" autocomplete="email" />
-
       <button id="submitBtn" type="submit">Kirim</button>
     </form>
     <p id="status"></p>
@@ -34,12 +31,10 @@
 
       const nama = document.getElementById("nama").value.trim();
       const nohp = document.getElementById("nohp").value.trim();
-      const email = document.getElementById("email").value.trim();
 
       let message = "";
       if (nama) message += `Nama: ${nama}%0A`;
-      if (nohp) message += `No HP: ${nohp}%0A`;
-      if (email) message += `Email: ${email}`;
+      if (nohp) message += `No HP: ${nohp}`;
 
       if (message === "") {
         status.innerText = "Isi minimal satu field.";
@@ -55,7 +50,7 @@
       .then(response => {
         if (response.ok) {
           status.innerText = "Berhasil dikirim!";
-          submitBtn.style.backgroundColor = "#2ecc71"; // tombol jadi hijau
+          submitBtn.style.backgroundColor = "#2ecc71";
           form.reset();
         } else {
           status.innerText = "Gagal mengirim.";
