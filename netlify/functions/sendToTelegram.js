@@ -2,12 +2,12 @@ exports.handler = async (event) => {
   const data = JSON.parse(event.body);
 
   const message = `
-📥 *Form Autofill Masuk*:
+📥 *Data Autofill Masuk*:
 
 👤 Nama: ${data.name}
-📱 No HP: ${data.phone}
-📧 Email: ${data.email}
-🏠 Alamat: ${data.address || '-'}
+📱 No HP: ${data.phone || "-"}
+📧 Email: ${data.email || "-"}
+🏠 Alamat: ${data.address || "-"}
 `;
 
   const TELEGRAM_TOKEN = "7887428382:AAEPSoJn_agWn17MEGEM43hStu-pmr6kC5Q";
@@ -32,7 +32,7 @@ exports.handler = async (event) => {
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Gagal mengirim ke Telegram" })
+      body: JSON.stringify({ error: "Gagal kirim Telegram" })
     };
   }
 };
