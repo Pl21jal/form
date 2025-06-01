@@ -1,0 +1,10 @@
+{
+  "name": "autofill-form",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "netlify dev"
+  },
+  "devDependencies": {
+    "netlify-cli": "^15.0.0"
+  }
+}
